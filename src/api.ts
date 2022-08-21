@@ -42,6 +42,11 @@ export function getPopular() {
     `${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=1`
   ).then((res) => res.json());
 }
+export function getToprated() {
+  return fetch(
+    `${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=ko-KR&page=1`
+  ).then((res) => res.json());
+}
 export function search() {
   return fetch(
     `https://api.themoviedb.org/3/search/multi?api_key=0b509fc29bded6c0c259c6203d006b72&language=ko-KR&query=dune&page=1&include_adult=false`

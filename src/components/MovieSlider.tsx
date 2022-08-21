@@ -39,6 +39,7 @@ const InfoVariants = {
 };
 const offset = 6;
 const MovieSlider = ({ data }: { data: IGetMoviesResult }) => {
+  console.log(data);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const setDetail = useSetRecoilState(detailSelector);
@@ -46,7 +47,7 @@ const MovieSlider = ({ data }: { data: IGetMoviesResult }) => {
     if (data) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = data?.results.length - 1;
+      const totalMovies = data?.results.length;
       const maxIndex = Math.ceil(totalMovies / offset) - 1;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
@@ -69,8 +70,7 @@ const MovieSlider = ({ data }: { data: IGetMoviesResult }) => {
             transition={{ type: "tween" }}
           >
             {data?.results
-              .slice(1)
-              .slice(offset * index, offset * index + offset)
+              ?.slice(offset * index, offset * index + offset)
               .map((movie) => (
                 <Box
                   layoutId={String(movie.id)}
@@ -96,10 +96,9 @@ const MovieSlider = ({ data }: { data: IGetMoviesResult }) => {
         </AnimatePresence>
         <SlideButton
           onClick={increaseIndex}
-          initial={{ scale: 0, opacity: 0 }}
+          initial={{ opacity: 0 }}
           whileHover={{
             opacity: 1,
-            scale: 1,
           }}
         >
           &gt;

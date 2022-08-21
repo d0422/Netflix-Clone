@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
-import { getMovies, getPopular, IGetMoviesResult } from "../api";
+import { getMovies, getPopular, getToprated, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
 
 import {
@@ -20,7 +20,9 @@ const Home = () => {
     getMovies
   );
   const { data: popular } = useQuery(["popular"], getPopular);
+  const { data: topRated } = useQuery(["topRated"], getToprated);
   const [detail, setDetail] = useState<IGetMoviesResult>();
+  console.log(topRated);
   return (
     <Wrapper>
       {isLoading ? (
@@ -33,8 +35,10 @@ const Home = () => {
           </Banner>
           <SliderTitle>현재 상영작</SliderTitle>
           <MovieSlider data={data as any}></MovieSlider>
-          <SliderTitle>최고 인기작</SliderTitle>
+          <SliderTitle>최근 인기작</SliderTitle>
           <MovieSlider data={popular}></MovieSlider>
+          <SliderTitle>최고 평점</SliderTitle>
+          <MovieSlider data={topRated}></MovieSlider>
         </>
       )}
       <Detail></Detail>
