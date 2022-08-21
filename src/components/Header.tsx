@@ -1,8 +1,9 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { motion, useAnimation, useScroll, useTransform } from "framer-motion";
 import {
   Circle,
   Col,
+  Input,
   Item,
   Items,
   Logo,
@@ -19,18 +20,43 @@ const logoVariants = {
     transition: {
       repeat: Infinity,
     },
+    exit: {
+      fillOpacity: 1,
+    },
+  },
+};
+const navVariants = {
+  top: {
+    backgroundColor: "rgba(0,0,0,0)",
+  },
+  scroll: {
+    backgroundColor: "rgba(0,0,0,1)",
   },
 };
 const Header = () => {
+  const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("/tv");
+  const openSearch = () => setSearchOpen((prev) => !prev);
+  const { scrollY } = useScroll();
+  const navAnimation = useAnimation();
+  useEffect(() => {
+    scrollY.onChange(() => {
+      if (scrollY.get() > 80) {
+        navAnimation.start("scroll");
+      } else {
+        navAnimation.start("top");
+      }
+    });
+  }, [scrollY]);
   return (
-    <Nav>
+    <Nav variants={navVariants} initial="top" animate={navAnimation}>
       <Col>
         <Logo
           variants={logoVariants}
           initial="normal"
           whileHover="active"
+          exit="exit"
           xmlns="http://www.w3.org/2000/svg"
           width="1024"
           height="276.742"
@@ -43,23 +69,23 @@ const Header = () => {
         </Logo>
         <Items>
           <Item>
-            <Link to="/">
-              Home
-              <Circle />
-            </Link>
+            <Link to="/">Home{homeMatch && <Circle layoutId="circle" />}</Link>
           </Item>
           <Item>
             <Link to="tv">
               Tv Shows
-              <Circle />
+              {tvMatch && <Circle layoutId="circle" />}
             </Link>
           </Item>
         </Items>
       </Col>
-
       <Col>
         <Search>
-          <svg
+          <motion.svg
+            onClick={openSearch}
+            animate={{
+              x: searchOpen ? -180 : 0,
+            }}
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -69,7 +95,11 @@ const Header = () => {
               d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
               clipRule="evenodd"
             ></path>
-          </svg>
+          </motion.svg>
+          <Input
+            placeholder="search..."
+            animate={{ scaleX: searchOpen ? 1 : 0 }}
+          />
         </Search>
       </Col>
     </Nav>
