@@ -3,12 +3,18 @@ import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getMovies, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useScroll } from "framer-motion";
+import { useMatch, useNavigate } from "react-router-dom";
 import {
   Banner,
+  BigCover,
+  BigMovie,
+  BigOverview,
+  BigTitle,
   Box,
   Info,
   Loader,
+  Overlay,
   Overview,
   Row,
   Slider,
@@ -65,6 +71,20 @@ const Home = () => {
     }
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
+  const navigate = useNavigate();
+  const onBoxClicked = (movieId: number) => {
+    navigate(`/movies/${movieId}`);
+  };
+  const OverlayClick = () => {
+    navigate(-1);
+  };
+  const bigMovieMatch = useMatch("/movies/:movieId");
+  const { scrollY } = useScroll();
+  const clickedMovie =
+    bigMovieMatch?.params.movieId &&
+    data?.results.find(
+      (movie) => movie.id + "" === bigMovieMatch.params.movieId
+    );
   return (
     <Wrapper>
       {isLoading ? (
@@ -93,6 +113,10 @@ const Home = () => {
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
                     <Box
+                      layoutId={movie.id + ""}
+                      onClick={() => {
+                        onBoxClicked(movie.id);
+                      }}
                       variants={BoxVariants}
                       initial="normal"
                       whileHover="hover"
@@ -110,6 +134,36 @@ const Home = () => {
               </Row>
             </AnimatePresence>
           </Slider>
+          <AnimatePresence>
+            {bigMovieMatch ? (
+              <>
+                <Overlay
+                  onClick={OverlayClick}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                />
+                <BigMovie
+                  layoutId={bigMovieMatch.params.movieId}
+                  style={{ top: scrollY.get() }}
+                >
+                  {clickedMovie && (
+                    <>
+                      <BigCover
+                        style={{
+                          backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
+                            clickedMovie.backdrop_path,
+                            "w500"
+                          )})`,
+                        }}
+                      ></BigCover>
+                      <BigTitle>{clickedMovie.title}</BigTitle>
+                      <BigOverview>{clickedMovie.overview}</BigOverview>
+                    </>
+                  )}
+                </BigMovie>
+              </>
+            ) : null}
+          </AnimatePresence>
         </>
       )}
     </Wrapper>

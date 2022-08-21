@@ -10,7 +10,8 @@ import {
   Nav,
   Search,
 } from "../style/HeaderStyle";
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 const logoVariants = {
   normal: {
     fillOpacity: 1,
@@ -33,12 +34,22 @@ const navVariants = {
     backgroundColor: "rgba(0,0,0,1)",
   },
 };
+interface IForm {
+  keyword: string;
+}
+
 const Header = () => {
+  const { register, handleSubmit } = useForm<IForm>();
   const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("/tv");
   const openSearch = () => setSearchOpen((prev) => !prev);
   const { scrollY } = useScroll();
+  const navigate = useNavigate();
+  const onValid = (data: IForm) => {
+    navigate(`/search?keyword=${data.keyword}`);
+  };
+
   const navAnimation = useAnimation();
   useEffect(() => {
     scrollY.onChange(() => {
@@ -80,7 +91,7 @@ const Header = () => {
         </Items>
       </Col>
       <Col>
-        <Search>
+        <Search onSubmit={handleSubmit(onValid)}>
           <motion.svg
             onClick={openSearch}
             animate={{
@@ -97,6 +108,7 @@ const Header = () => {
             ></path>
           </motion.svg>
           <Input
+            {...register("keyword", { required: true, minLength: 2 })}
             placeholder="search..."
             animate={{ scaleX: searchOpen ? 1 : 0 }}
           />

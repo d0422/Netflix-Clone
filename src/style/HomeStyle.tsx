@@ -63,3 +63,41 @@ export const Info = styled(motion.div)`
     font-size: 18px;
   }
 `;
+export const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+export const BigMovie = styled(motion.div)`
+  position: absolute;
+  width: 40vw;
+  border-radius: 15px;
+  overflow: hidden;
+  height: 80vh;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  background-color: ${(props) => props.theme.black.lighter};
+`;
+export const BigCover = styled.div`
+  width: 100%;
+  height: 400px;
+  background-size: cover;
+  background-position: center center;
+`;
+export const BigTitle = styled.h3`
+  color: ${(props) => props.theme.white.lighter};
+  padding: 10px;
+  font-size: 46px;
+  position: relative;
+  top: -80px;
+`;
+export const BigOverview = styled.p`
+  padding: 20px;
+  top: -80px;
+  position: relative;
+  color: ${(props) => props.theme.white.lighter};
+`;

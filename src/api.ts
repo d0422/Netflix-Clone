@@ -23,3 +23,6 @@ export function getMovies() {
     `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=ko-KR&page=1&region=kr`
   ).then((response) => response.json());
 }
+export function search(){
+  return fetch(`https://api.themoviedb.org/3/search/multi?api_key=0b509fc29bded6c0c259c6203d006b72&language=ko-KR&query=dune&page=1&include_adult=false`)
+}
