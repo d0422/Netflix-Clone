@@ -1,11 +1,11 @@
 import { AnimatePresence } from "framer-motion";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IGetMoviesResult } from "../api";
+import { IGetMoviesResult, IGetTvResult } from "../api";
 import { Box, Info, Row, SlideButton, Slider } from "../style/HomeStyle";
 import { makeImagePath } from "../utils";
 import { useSetRecoilState } from "recoil";
-import { detailSelector } from "../atoms";
+import { detailSelector, tvdetailSelector } from "../atoms";
 const rowVariants = {
   hidden: {
     x: window.outerWidth + 5,
@@ -38,16 +38,11 @@ const InfoVariants = {
   },
 };
 const offset = 6;
-const MovieSlider = ({
-  data,
-  type,
-}: {
-  data: IGetMoviesResult;
-  type: string;
-}) => {
+const TvSlider = ({ data, type }: { data: IGetTvResult; type: string }) => {
+  console.log(data);
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
-  const setDetail = useSetRecoilState(detailSelector);
+  const setDetail = useSetRecoilState(tvdetailSelector);
   const increaseIndex = () => {
     if (data) {
       if (leaving) return;
@@ -59,8 +54,8 @@ const MovieSlider = ({
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const navigate = useNavigate();
-  const onBoxClicked = (movieId: number) => {
-    navigate(`/movies/${movieId}`);
+  const onBoxClicked = (tvId: number) => {
+    navigate(`/tv/${tvId}`);
   };
   return (
     <>
@@ -76,12 +71,12 @@ const MovieSlider = ({
           >
             {data?.results
               ?.slice(offset * index, offset * index + offset)
-              .map((movie) => (
+              .map((tv) => (
                 <Box
-                  layoutId={String(movie.id) + type}
+                  layoutId={String(tv.id) + type}
                   onClick={() => {
-                    onBoxClicked(movie.id);
-                    setDetail(movie.id + type);
+                    onBoxClicked(tv.id);
+                    setDetail(tv.id + type);
                   }}
                   variants={BoxVariants}
                   initial="normal"
@@ -89,11 +84,11 @@ const MovieSlider = ({
                   transition={{
                     type: "tween",
                   }}
-                  key={movie.id + type}
-                  bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                  key={tv.id + type}
+                  bgPhoto={makeImagePath(tv.backdrop_path, "w500")}
                 >
                   <Info variants={InfoVariants}>
-                    <h4>{movie.title}</h4>
+                    <h4>{tv.name}</h4>
                   </Info>
                 </Box>
               ))}
@@ -113,4 +108,4 @@ const MovieSlider = ({
   );
 };
 
-export default MovieSlider;
+export default TvSlider;

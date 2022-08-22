@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
-import { getMovies, getPopular, getToprated, IGetMoviesResult } from "../api";
+import {
+  getMovies,
+  getPopular,
+  getToprated,
+  getUpcoming,
+  IGetMoviesResult,
+} from "../api";
 import { makeImagePath } from "../utils";
-
 import {
   Banner,
   Loader,
@@ -13,7 +18,6 @@ import {
 } from "../style/HomeStyle";
 import MovieSlider from "../components/MovieSlider";
 import Detail from "../components/Detail";
-
 const Home = () => {
   const { data, isLoading } = useQuery<IGetMoviesResult>(
     ["movies", "nowPlaying"],
@@ -21,8 +25,7 @@ const Home = () => {
   );
   const { data: popular } = useQuery(["popular"], getPopular);
   const { data: topRated } = useQuery(["topRated"], getToprated);
-  const [detail, setDetail] = useState<IGetMoviesResult>();
-  console.log(topRated);
+  const { data: Upcoming } = useQuery(["Upcoming"], getUpcoming);
   return (
     <Wrapper>
       {isLoading ? (
@@ -34,11 +37,13 @@ const Home = () => {
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
           <SliderTitle>현재 상영작</SliderTitle>
-          <MovieSlider data={data as any}></MovieSlider>
+          <MovieSlider data={data as any} type={"nowplaying"}></MovieSlider>
           <SliderTitle>최근 인기작</SliderTitle>
-          <MovieSlider data={popular}></MovieSlider>
+          <MovieSlider data={popular} type={"popular"}></MovieSlider>
           <SliderTitle>최고 평점</SliderTitle>
-          <MovieSlider data={topRated}></MovieSlider>
+          <MovieSlider data={topRated} type={"topRated"}></MovieSlider>
+          <SliderTitle>곧 개봉</SliderTitle>
+          <MovieSlider data={Upcoming} type={"Upcoming"}></MovieSlider>
         </>
       )}
       <Detail></Detail>

@@ -8,6 +8,12 @@ interface IMovie {
   title: string;
   overview: string;
 }
+interface ITv {
+  backdrop_path: string;
+  id: number;
+  name: string;
+  overview: string;
+}
 export interface IGetMoviesResult {
   dates: {
     mininum: string;
@@ -17,6 +23,10 @@ export interface IGetMoviesResult {
   results: IMovie[];
   total_pages: number;
   total_result: number;
+}
+export interface IGetTvResult {
+  page: number;
+  results: ITv[];
 }
 export interface Igenres {
   id: number;
@@ -47,8 +57,52 @@ export function getToprated() {
     `${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=ko-KR&page=1`
   ).then((res) => res.json());
 }
-export function search() {
+export function getUpcoming() {
   return fetch(
-    `https://api.themoviedb.org/3/search/multi?api_key=0b509fc29bded6c0c259c6203d006b72&language=ko-KR&query=dune&page=1&include_adult=false`
+    `${BASE_PATH}/movie/upcoming?api_key=${API_KEY}&language=ko-KR`
+  ).then((res) => res.json());
+}
+
+export function getPopularTv() {
+  return fetch(
+    `${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko-KR&page=1`
+  ).then((res) => res.json());
+}
+export function getTopratedTv() {
+  return fetch(
+    `${BASE_PATH}/tv/top_rated?api_key=${API_KEY}&language=ko-KR&page=1`
+  ).then((res) => res.json());
+}
+export function getAiringTv() {
+  return fetch(
+    `${BASE_PATH}/tv/airing_today?api_key=${API_KEY}&language=ko-KR&page=1`
+  ).then((res) => res.json());
+}
+export function getOnAirTv() {
+  return fetch(
+    `${BASE_PATH}/tv/on_the_air?api_key=${API_KEY}&language=ko-KR&page=1`
+  ).then((res) => res.json());
+}
+export function getTvDetail(TvId: string) {
+  return fetch(`
+  ${BASE_PATH}/tv/${TvId}?api_key=${API_KEY}&language=ko-KR`).then((res) =>
+    res.json()
   );
+}
+
+export function getTvSimliar(TvId: string) {
+  return fetch(`
+  ${BASE_PATH}/tv/${TvId}/similar?api_key=${API_KEY}&language=ko-KR&page=1`).then(
+    (res) => res.json()
+  );
+}
+export function search(keyword: string) {
+  return fetch(
+    `${BASE_PATH}/search/movie?api_key=${API_KEY}&language=ko-KR&query=${keyword}&page=1`
+  ).then((res) => res.json());
+}
+export function searchTv(keyword: string) {
+  return fetch(
+    `${BASE_PATH}/search/tv?api_key=${API_KEY}&language=ko-KR&query=${keyword}&page=1`
+  ).then((res) => res.json());
 }

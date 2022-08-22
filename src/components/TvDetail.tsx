@@ -2,8 +2,8 @@ import { AnimatePresence, useScroll } from "framer-motion";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { getDetail, Igenres } from "../api";
-import { detailSelector } from "../atoms";
+import { getDetail, getTvDetail, Igenres } from "../api";
+import { detailSelector, tvdetailSelector } from "../atoms";
 import {
   BigContainer,
   BigCover,
@@ -18,30 +18,29 @@ import {
 } from "../style/HomeStyle";
 import { makeImagePath } from "../utils";
 import Similar from "./Similar";
+import TvSimilar from "./Tvsimilar";
 
-const Detail = () => {
+const TvDetail = () => {
   const navigate = useNavigate();
-  const movieId = useRecoilValue(detailSelector);
-  const setMovieId = useSetRecoilState(detailSelector);
+  const TvId = useRecoilValue(tvdetailSelector);
+  const setTvId = useSetRecoilState(tvdetailSelector);
   const { scrollY } = useScroll();
-  const { data: detail } = useQuery(["detail", movieId], () =>
-    getDetail(movieId)
-  );
+  const { data: detail } = useQuery(["detail", TvId], () => getTvDetail(TvId));
   const OverlayClick = () => {
-    setMovieId("");
+    setTvId("");
     navigate(-1);
   };
   return (
     <AnimatePresence>
-      {movieId ? (
+      {TvId ? (
         <>
           <Overlay
             onClick={OverlayClick}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           />
-          <BigMovie layoutId={movieId} style={{ top: scrollY.get() }}>
-            {movieId && (
+          <BigMovie layoutId={TvId} style={{ top: scrollY.get() }}>
+            {TvId && (
               <>
                 <BigCover
                   style={{
@@ -52,7 +51,7 @@ const Detail = () => {
                   }}
                 ></BigCover>
                 <BigHeader>
-                  <BigTitle>{detail?.title}</BigTitle>
+                  <BigTitle>{detail?.name}</BigTitle>
                   <Rate>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +77,7 @@ const Detail = () => {
                     ))}
                   </Tags>
                 </BigContainer>
-                <Similar movieid={detail?.id}></Similar>
+                <TvSimilar TvId={detail?.id}></TvSimilar>
               </>
             )}
           </BigMovie>
@@ -88,4 +87,4 @@ const Detail = () => {
   );
 };
 
-export default Detail;
+export default TvDetail;
